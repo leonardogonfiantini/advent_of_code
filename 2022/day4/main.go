@@ -36,13 +36,28 @@ func main() {
 		a4, _ := strconv.Atoi(assignments2[1])
 
 
-		if ((a1 <= a3) && (a2 >= a4)) || ((a3 <= a1) && (a4 >= a2)) {
-				score++
+		
+		for i := a1; i <= a2; i++ {
+			f := 0
+			
+			for j := a3; j <= a4; j++ {
+
+				if i == j {
+					score++
+					f = 1
+					break
+				}
+			}
+
+			if f == 1 {
+				break
+			}
+
 		}
 
 	}
 
-	fmt.Printf("The total number of same pair is: %d\n", score)
+	fmt.Printf("The total number of overlapping pair is: %d\n", score)
 
 
 
