@@ -52,16 +52,18 @@ func main() {
 		from, _ := strconv.Atoi(line[3])
 		to, _ := strconv.Atoi(line[5])
 
+		crate := make([]string, 0)
 		for move != 0 {
-			crate := crates[from-1][0]
+			crate = append(crate, crates[from-1][0])
 			crates[from-1] = crates[from-1][1:]
-			crates[to-1] = append([]string{crate}, crates[to-1]...)
 			move--
 		}
+
+		crates[to-1] = append(crate, crates[to-1]...)
+
 	}
 
 	for i:=0; i<9; i++ {
 		fmt.Println(crates[i][0])
 	}
-
 }
