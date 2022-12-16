@@ -60,7 +60,6 @@ func main() {
 		}
 
 		crates[to-1] = append(crate, crates[to-1]...)
-
 	}
 
 	for i:=0; i<9; i++ {
