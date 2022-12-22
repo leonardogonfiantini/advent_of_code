@@ -17,7 +17,8 @@ type point struct {
 
 func isTouching(h *point, t *point) bool {
 
-	if  (h.y == t.y && h.x+1 == t.x) || (h.y-1 == t.y && h.x == t.x) ||
+	if  (h.y == t.y && h.x == t.x) ||
+		(h.y == t.y && h.x+1 == t.x) || (h.y-1 == t.y && h.x == t.x) ||
 		(h.y == t.y && h.x-1 == t.x) || (h.y+1 == t.y && h.x == t.x) ||
 		(h.y+1 == t.y && h.x+1 == t.x) || (h.y-1 == t.y && h.x-1 == t.x) ||
 		(h.y+1 == t.y && h.x-1 == t.x) || (h.y-1 == t.y && h.x+1 == t.x) {
@@ -40,7 +41,7 @@ func pointDistance(p1 *point, p2 *point) bool {
 
 func main() {
 
-	f, err := os.Open("input.txt")
+	f, err := os.Open("input2.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -49,8 +50,10 @@ func main() {
 
 	scanner := bufio.NewScanner(f)
 
-	h := &point {0,0,}
-	t := &point {0,0,}
+	knots := make([]*point, 10)
+	for i := 0; i < len(knots); i++ {
+		knots[i] = &point{0,0,}
+	}
 
 	p_arr := make([]point, 0)
 
@@ -60,53 +63,85 @@ func main() {
 		commands := strings.Split(line, " ")
 		steps, _ := strconv.Atoi(commands[1])
 
-		for i := 0; i < steps; i++ {
+		for j := 0; j < steps; j++ {
 
+			
 			switch commands[0] {
 			case "U":
-				h.y++
+				knots[0].y++
 			case "D":
-				h.y--
+				knots[0].y--
 			case "L":
-				h.x--
+				knots[0].x--
 			case "R":
-				h.x++
+				knots[0].x++
 			}
+			
+			
 
-			if h.x == t.x && h.y == t.y { continue }
+			for i := 1; i < len(knots); i++ {
 
-			if !isTouching(h, t) {
-				if pointDistance(h, t) {
-					switch commands[0] {
-					case "U":
-						t.y++
-					case "D":
-						t.y--
-					case "L":
-						t.x--
-					case "R":
-						t.x++
+
+				if !isTouching(knots[i-1], knots[i]) {
+					if pointDistance(knots[i-1], knots[i]) {
+						if knots[i-1].x == knots[i].x && knots[i-1].y == (knots[i].y+2) {
+							knots[i].y++
+						} 
+
+						if knots[i-1].x == knots[i].x && knots[i-1].y == (knots[i].y-2) {
+							knots[i].y--
+						}
+
+						if knots[i-1].x == (knots[i].x-2) && knots[i-1].y == knots[i].y {
+							knots[i].x--
+						}
+
+						if knots[i-1].x == (knots[i].x+2) && knots[i-1].y == knots[i].y {
+							knots[i].x++
+						}
+					} else {
+
+						//1 1
+						if (knots[i-1].x == knots[i].x+1 && knots[i-1].y-1 == knots[i].y+1) ||
+							(knots[i-1].x-1 == knots[i].x+1 && knots[i-1].y == knots[i].y+1) {
+								knots[i].x--
+								knots[i].y--
+						}
+
+						
+						//-1 1
+						if (knots[i-1].x+1 == knots[i].x-1 && knots[i-1].y == knots[i].y+1) ||
+							(knots[i-1].x == knots[i].x-1 && knots[i-1].y-1 == knots[i].y+1) {
+								knots[i].x++
+								knots[i].y--
+						}
+
+
+						//-1 -1
+						if (knots[i-1].x == knots[i].x-1 && knots[i-1].y+1 == knots[i].y-1) ||
+							(knots[i-1].x+1 == knots[i].x-1 && knots[i-1].y == knots[i].y-1) {
+								knots[i].x++
+								knots[i].y++
+						}
+
+
+						//1 -1
+						if (knots[i-1].x == knots[i].x+1 && knots[i-1].y+1 == knots[i].y-1) ||
+							(knots[i-1].x-1 == knots[i].x+1 && knots[i-1].y == knots[i].y-1) {
+								knots[i].x--
+								knots[i].y++
+						}
+					
 					}
-				} else {
-					switch commands[0] {
-					case "U":
-						t.y = h.y-1
-						t.x = h.x
-					case "D":
-						t.y = h.y+1
-						t.x = h.x
-					case "L":
-						t.y = h.y
-						t.x = h.x+1
-					case "R":
-						t.y = h.y
-						t.x = h.x-1
-					}
+
 				}
 
+
+
 			}
 
-			p_arr = append(p_arr, *t)
+			p_arr = append(p_arr, *knots[len(knots)-1])
+
 		}
 
 	}
@@ -114,7 +149,6 @@ func main() {
 	final_arr := make([]point, 0)
 	for _, p := range p_arr {
 
-		fmt.Println(p)
 		flag := 0
 		for _, f := range final_arr {
 			if (f.x == p.x && f.y == p.y) {
