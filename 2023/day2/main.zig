@@ -1,7 +1,7 @@
 const std = @import("std");
 const print = std.debug.print;
 
-pub fn main() !void {
+pub fn sol1() !void {
     var file = try std.fs.cwd().openFile("input.txt", .{});
     defer file.close();
 
@@ -55,4 +55,13 @@ pub fn main() !void {
     }
 
     print("{}", .{sum});
+}
+
+
+pub fn sol2() !void {
+    print("Hello world\n", .{});
+}
+
+pub fn main() !void {
+    try sol1();
 }
