@@ -59,9 +59,55 @@ pub fn sol1() !void {
 
 
 pub fn sol2() !void {
-    print("Hello world\n", .{});
+    var file = try std.fs.cwd().openFile("input.txt", .{});
+    defer file.close();
+
+    var buf_reader = std.io.bufferedReader(file.reader());
+    var in_stream = buf_reader.reader();
+
+    var buf: [1024]u8 = undefined;
+
+    var sum: u64 = 0;
+    while (try in_stream.readUntilDelimiterOrEof(&buf, '\n')) |line| {
+        //only 12 red cubes, 13 green cubes, and 14 blue cubes
+        var dotdot_split = std.mem.split(u8, line, ":");
+        _ = dotdot_split.next().?;
+
+        var max_red: u64 = 0;
+        var max_green: u64 = 0;
+        var max_blue: u64 = 0;
+
+        while (dotdot_split.next()) |dotdot| {
+            var dotcomma_split = std.mem.split(u8, dotdot, ";");
+            while (dotcomma_split.next()) |dotcomma| {
+                var comma_split = std.mem.split(u8, dotcomma, ",");
+                while (comma_split.next()) |comma| {
+                    var space_split = std.mem.split(u8, comma, " ");
+                    _ = space_split.next();
+                    const ball_value: u64 = try std.fmt.parseInt(u64, space_split.next().?, 10);
+                    const color = space_split.next().?;
+
+                    if (std.mem.eql(u8, color, "red") and ball_value > max_red) {
+                        max_red = ball_value;
+                    }
+
+                    if (std.mem.eql(u8, color, "green") and ball_value > max_green) {
+                        max_green = ball_value;
+                    }
+
+                    if (std.mem.eql(u8, color, "blue") and ball_value > max_blue) {
+                        max_blue = ball_value;
+                    }
+                }
+            }
+        }
+
+        sum += max_red * max_green * max_blue;
+    }
+
+    print("{}", .{sum});
 }
 
 pub fn main() !void {
-    try sol1();
+    try sol2();
 }
