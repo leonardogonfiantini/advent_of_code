@@ -28,9 +28,8 @@ pub fn main() !void {
             while (dotcomma_split.next()) |dotcomma| {
                 var comma_split = std.mem.split(u8, dotcomma, ",");
                 while (comma_split.next()) |comma| {
-                    print("{s}\n", .{comma});
                     var space_split = std.mem.split(u8, comma, " ");
-                    print("{s}\n", .{space_split.next().?});
+                    _ = space_split.next();
                     const ball_value: u64 = try std.fmt.parseInt(u64, space_split.next().?, 10);
                     const color = space_split.next().?;
 
