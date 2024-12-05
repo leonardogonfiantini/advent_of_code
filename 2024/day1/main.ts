@@ -37,10 +37,26 @@ async function solution2() {
     array1.sort((a,b) => a - b);
     array2.sort((a,b) => a - b);
 
+
+    let score: number = 0;
     array1.forEach(el => {
-        const result = array2.flatMap((num, index) => (num === el ? index : []));
-        console.log(result); 
+        const n_array2 = array2.flatMap((num, index) => (num === el ? index : []));
+        const n_array1 = array1.flatMap((num, index) => (num === el ? index : []));
+        
+        score += el * n_array2.length;
+
+        n_array2.forEach(el => {
+            array2[el] = NaN;
+        });
+
+        n_array1.forEach(el => {
+            array1[el] = NaN;
+        });
+
     });
+
+
+    console.log("Solution2: ", score);
 
 }
 
